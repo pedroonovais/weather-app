@@ -1,28 +1,26 @@
-import { BiHomeAlt } from "react-icons/bi";
-import { BiSearch } from "react-icons/bi";
-import { BiBookHeart } from "react-icons/bi";
-import { BiSolidUserCircle } from "react-icons/bi";
+import { BiBookHeart, BiHomeAlt, BiSearch, BiSolidUserCircle } from "react-icons/bi";
+import { Link } from "react-router-dom";
 import { StyledMenu, StyledMenuItem, StyledWrapperMenu } from "./Menu.style";
 
 export const Menu = () => {
-    return(
+    return (
         <StyledMenu>
             <StyledWrapperMenu>
                 <StyledMenuItem>
-                    <BiHomeAlt size="1.5rem" color="#38aede"/>
-                    <a href="#">Inicio</a>
+                    <BiHomeAlt size="1.5rem" color="#38aede" />
+                    <Link to="/">Inicio</Link>
                 </StyledMenuItem>
                 <StyledMenuItem>
-                    <BiSearch size="1.5rem" color="#38aede"/>
-                    <a href="#">Busca</a>
+                    <BiSearch size="1.5rem" color="#38aede" />
+                    <Link to="/busca">Busca</Link>
                 </StyledMenuItem>
                 <StyledMenuItem>
-                    <BiBookHeart size="1.5rem" color="#38aede"/>
-                    <a href="#">Favoritos</a>
+                    <BiBookHeart size="1.5rem" color="#38aede" />
+                    <Link to="/favoritos">Favoritos</Link>
                 </StyledMenuItem>
                 <StyledMenuItem>
-                    <BiSolidUserCircle size="1.5rem" color="#38aede"/>
-                    <a href="#">Perfil</a>
+                    <BiSolidUserCircle size="1.5rem" color="#38aede" />
+                    <Link to="/perfil">Perfil</Link>
                 </StyledMenuItem>
             </StyledWrapperMenu>
         </StyledMenu>
