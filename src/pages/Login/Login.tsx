@@ -16,7 +16,8 @@ export default function Login() {
     }
 
     const handleClick = () => {
-        console.log(login, password);
+        const params = { login, password }
+        console.log(params);
     }
 
     return (
