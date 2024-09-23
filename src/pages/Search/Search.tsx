@@ -1,77 +1,78 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Layout } from "../../components/Layout/Layout";
-import { searchMock } from "../../mocks/SearchMock";
+import { Input } from "../../components/Input/Input";
+import { Button } from "../../components/Button/Button";
 
 export default function Search() {
-    const [cityName, setCityName] = useState<string>()
-    const [hasSearch, setHasSearch] = useState<boolean>(false)
-    const [cityList, setCityList] = useState(searchMock)
-    const [noResult, setNoResult] = useState<boolean>(false)
+  const navigate = useNavigate();
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.value === '') {
-            setHasSearch(false)
-        }
+  const [cityName, setCityName] = useState<string>("");
+  const [cityList, setCityList] = useState([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-        setCityName(event.target.value)
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCityName(event.target.value);
+  };
+
+  const loadCities = async () => {
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(
+        `https://brasilapi.com.br/api/cptec/v1/cidade/${cityName}`
+      );
+
+      const data = await response.json();
+      setCityList(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    const LoadCities = async () => {
-        try {
-            const response = await fetch(`https://brasilapi.com.br/api/cptec/v1/cidade/${cityName}`)
-            const data = await response.json()
-            console.log(data);
+  const handleClick = () => {
+    loadCities();
+  };
 
-            setCityList(data)
-        } catch (error) {
-            console.log(error);
-        }
-    }
+  const handleNavigate = (cityCode: number) => {
+    const state = {
+      cityCode: cityCode,
+    };
 
-    const handleClick = () => {
-        LoadCities()
-    }
+    navigate("/", { state });
+  };
 
-    const handleClear = () => {
-        setCityName('')
-        setHasSearch(false)
-        setNoResult(false)
-    }
+  return (
+    <Layout>
+      <h1>Busca</h1>
+      <form>
+        <Input
+          label="Buscar cidade"
+          id="search"
+          name="search"
+          type="text"
+          onChange={handleChange}
+        />
+        <Button type="button" onClick={handleClick}>
+          Buscar
+        </Button>
+      </form>
 
-    return (
-        <Layout>
-            <h1>Busca</h1>
-            <form>
-                <label htmlFor="search">Buscar cidade</label>
-                <input
-                    type="text"
-                    name="search"
-                    id="search"
-                    onChange={handleChange}
-                    value={cityName}
-                />
-                <button onClick={handleClick} type="button">Buscar</button>
-            </form>
-
-            {hasSearch
-                ? (<div>
-                    <p>Busca pela cidade: {cityName}</p>
-                    <button onClick={handleClear}>Limpar busca</button>
-                    {noResult ? (<p>Nenhuma cidade encontrada!</p>)
-                        :
-                        <ul>
-                            {
-                                cityList.map((city) => (
-                                    <li key={city.id}>
-                                        {city.nome} - {city.estado}
-                                    </li>
-                                ))
-                            }
-                        </ul>}
-                </div>
-                ) : null
-            }
-
-        </Layout>
-    );
+      <div>
+        {isLoading ? (
+          <p>Carregando</p>
+        ) : (
+          <ul>
+            {cityList.map((city) => (
+              <li key={city.id} onClick={() => handleNavigate(city.id)}>
+                {city.nome} / {city.estado}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </Layout>
+  );
 }
