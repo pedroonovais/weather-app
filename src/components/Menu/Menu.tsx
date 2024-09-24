@@ -1,9 +1,6 @@
-import { BiHomeAlt } from "react-icons/bi";
-import { BiSearch } from "react-icons/bi";
-import { BiHeart } from "react-icons/bi";
-import { BiUserCircle } from "react-icons/bi";
-import { StyledMenu, StyledMenuItem, StyledWrapperMenu } from "./Menu.style";
+import { BiHeart, BiHomeAlt, BiSearch, BiUserCircle } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import { StyledMenu, StyledMenuItem, StyledWrapperMenu } from "./Menu.style";
 
 export const Menu = () => {
   return (
@@ -19,7 +16,7 @@ export const Menu = () => {
         </StyledMenuItem>
         <StyledMenuItem>
           <BiHeart size="1.5rem" color="#38aede" />
-          <a href="#">Favoritos</a>
+          <a href="/favorites">Favoritos</a>
         </StyledMenuItem>
         <StyledMenuItem>
           <BiUserCircle size="1.5rem" color="#38aede" />
