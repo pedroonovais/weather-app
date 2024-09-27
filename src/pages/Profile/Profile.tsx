@@ -4,8 +4,10 @@ import UserContext from "../../context/UserContext";
 import { Header } from "../../components/Header/Header";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { useVerifyLogin } from "../../helpers/useVerifyLogin";
 
 export default function Profile() {
+  useVerifyLogin()
   const { userName, setUserName } = useContext(UserContext)
   const navigate = useNavigate()
 

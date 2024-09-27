@@ -3,17 +3,21 @@ import { useLocation } from "react-router-dom";
 import { Header } from "../../components/Header/Header";
 import { Layout } from "../../components/Layout/Layout";
 import UserContext from "../../context/UserContext";
-import { verifyLogin } from "../../helpers/verifyLogin";
+import { useVerifyLogin } from "../../helpers/useVerifyLogin";
 
 export default function Home() {
+  useVerifyLogin()
   const location = useLocation();
-
   const { userName } = useContext(UserContext)
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [cityData, setCityData] = useState(null);
+  const [forecast, setForecast] = useState([])
 
   console.log(location);
+
+  const dateFormat = (data: string) => {
+    return new Date(data).toLocaleDateString("pt-br", { timeZone: "UTC" })
+  }
 
   const loadCity = async (cityCode: number) => {
     setIsLoading(true);
@@ -30,22 +34,39 @@ export default function Home() {
     }
   };
 
+  const loadForecast = async (cityCode: number) => {
+    const params = {
+      code: cityCode,
+      days: 6
+    }
+    
+    setIsLoading(true)
+    try{
+      const response = await fetch(`
+        https://brasilapi.com.br/api/cptec/v1/clima/previsao/${params.code}/${params.days}  
+      `);
+
+      const data = await response.json()
+      setForecast(data.clima)
+    } catch (error){
+      console.log(error)
+    } finally{
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     // if (location.state === null) {
     if (!location.state) {
       const inicialCity = 244;
       loadCity(inicialCity);
+      loadForecast(inicialCity)
       return;
     }
 
     loadCity(location.state.cityCode);
+    loadForecast(location.state.cityCode);
   }, []);
-
-  useEffect(() => {
-    if (!userName) {
-      verifyLogin()
-    }
-  }, [])
 
   return (
     <Layout>
@@ -65,6 +86,16 @@ export default function Home() {
             <p>{cityData?.clima[0].condicao_desc}</p>
           </div>
         )}
+      </div>
+      <div>
+        {forecast.map(item => (
+          <div key={item.data}>
+            <span>{dateFormat(item.data)}</span>
+            <span>{item.condicao}</span>
+            <span>Min: {item.min}&#176;C</span>
+            <span>Max: {item.max}&#176;C</span>
+          </div>
+        ))}
       </div>
     </Layout>
   );

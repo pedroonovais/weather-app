@@ -5,8 +5,10 @@ import { Header } from "../../components/Header/Header";
 import { Input } from "../../components/Input/Input";
 import { Layout } from "../../components/Layout/Layout";
 import UserContext from "../../context/UserContext";
+import { useVerifyLogin } from "../../helpers/useVerifyLogin";
 
 export default function Search() {
+  useVerifyLogin()
   const navigate = useNavigate();
 
   const { userName } = useContext(UserContext)
